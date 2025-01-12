@@ -31,9 +31,18 @@ function setupEventListeners() {
     document.getElementById('sortSelect').addEventListener('change', handleSort);
     document.getElementById('searchInput').addEventListener('input', handleSearch);
     document.getElementById('loadMoreBtn').addEventListener('click', handleLoadMore);
+
+    // !!!!    !!!!! not done 
+    
     
     // Корзина
     document.getElementById('cartBtn').addEventListener('click', showCart);
+}
+
+
+function handleLoadMore() {
+    state.page += 1;
+    updateProductsDisplay();
 }
 
 // Получение товаров с API
@@ -93,20 +102,20 @@ function createProductCard(product) {
 
 // Создание звёздочек рейтинга
 function createRatingStars(rating) {
-    const fullStars = Math.floor(rating);
-    const hasHalfStar = rating % 1 >= 0.5;
-    let stars = '';
+    const fullStars = Math.round(rating);
+    console.log(fullStars)
+    let stars = ``;
     
     for (let i = 0; i < 5; i++) {
         if (i < fullStars) {
             stars += '★';
-        } else if (i === fullStars && hasHalfStar) {
-            stars += '⯨';
+        
         } else {
             stars += '☆';
         }
     }
     return stars;
+
 }
 
 // Фильтрация товаров
@@ -128,24 +137,53 @@ function filterProducts() {
             product.name.toLowerCase().includes(state.searchQuery.toLowerCase());
 
         return categoryMatch && priceMatch && discountMatch && searchMatch;
+        //return categoryMatch && priceMatch && discountMatch;
     });
 }
 
-// Сортировка товаров
+// Сортировка товаровc not done 
 function sortProducts(products) {
     const sorted = [...products];
+    
     switch (state.sortBy) {
         case 'price-asc':
-            return sorted.sort((a, b) => (a.discount_price || a.actual_price) - 
-                                       (b.discount_price || b.actual_price));
+            sorted.sort((a, b) => (a.discount_price || a.actual_price) - 
+                                   (b.discount_price || b.actual_price));
+                                   break;
         case 'price-desc':
-            return sorted.sort((a, b) => (b.discount_price || b.actual_price) - 
-                                       (a.discount_price || a.actual_price));
+            sorted.sort((a, b) => (b.discount_price || b.actual_price) - 
+                                   (a.discount_price || a.actual_price));
+                                   break;
         case 'rating':
-            return sorted.sort((a, b) => b.rating - a.rating);
+            sorted.sort((a, b) => b.rating - a.rating);
+            break;
         default:
-            return sorted;
+            break;
     }
+
+    const container = document.getElementById('productsContainer');
+
+
+    if (!container) {
+        console.error("Container element not found");
+        return sorted;
+    }
+
+
+    if (sorted.length === 0) {
+        console.error("Nothing found");
+        
+        const noResultsHeader = document.createElement('div');
+        noResultsHeader.textContent = 'НИЧЕГО НЕ НАЙДЕНО';
+        container.innerHTML = '';
+        container.appendChild(noResultsHeader);
+
+        
+        
+        
+    }
+
+    return sorted;
 }
 
 // Обновление категорий
@@ -200,27 +238,72 @@ function handleSort(e) {
     state.sortBy = e.target.value;
     updateProductsDisplay();
 }
-
-// Обработчик поиска
+/////////
 function handleSearch(e) {
-    state.searchQuery = e.target.value;
+    const input = e.target;
+    const query = input.value.trim();
+    state.searchQuery = query;
+    console.log(query)
+    
     state.page = 1;
-    updateProductsDisplay();
+
+    
+    let suggestionsContainer = document.getElementById('suggestions-container');
+    if (!suggestionsContainer) {
+        suggestionsContainer = document.createElement('div');
+        suggestionsContainer.id = 'suggestions-container';
+        input.parentNode.appendChild(suggestionsContainer);
+    }
+
+    
+    if (query.length === 0) {
+        suggestionsContainer.style.display = 'none';
+        return;
+    }
+
+    
+    fetch(`https://edu.std-900.ist.mospolytech.ru/exam-2024-1/api/autocomplete?api_key=${API_KEY}&query=${query}`)
+        .then(response => response.json())
+        .then(suggestions => {
+            
+            suggestionsContainer.innerHTML = '';
+
+            if (suggestions.length > 0) {
+                
+
+
+                suggestions.forEach(suggestion => {
+                    const div = document.createElement('div');
+                    div.className = 'suggestion-item';
+                    div.textContent = suggestion;
+                    div.addEventListener('click', () => {
+                        input.value = suggestion;
+                        suggestionsContainer.style.display = 'none';
+                        state.searchQuery = suggestion;
+                    });
+                    suggestionsContainer.appendChild(div);
+                });
+                suggestionsContainer.style.display = 'block';
+            } else {
+                suggestionsContainer.style.display = 'none';
+            }
+        })
+        .catch(error => {
+            console.error('нет подсказок:', error);
+            suggestionsContainer.style.display = 'none';
+        });
+
+        
+    document.getElementById('searchBtn').addEventListener('click', updateProductsDisplay);
 }
 
-// Обработчик кнопки "Загрузить ещё"
-function handleLoadMore() {
-    state.page += 1;
-    updateProductsDisplay();
-}
-
-// Обновление кнопки "Загрузить ещё"
+// загрузить еще
 function updateLoadMoreButton(totalItems, displayedItems) {
     const button = document.getElementById('loadMoreBtn');
     button.style.display = displayedItems < totalItems ? 'block' : 'none';
 }
 
-// Работа с корзиной
+// локал сторедж номер корзины
 function addToCart(productId) {
     const product = state.products.find(p => p.id === productId);
     if (!product) return;
@@ -276,21 +359,22 @@ function showNotification(message, type = 'success') {
 
     
 
+    
+
+    
     const container = document.getElementById('notificationArea');
     container.appendChild(notification);
 
-    
-
-
-    
-
-    
-    document.getElementById('loadMoreBtn').addEventListener('click', handleLoadMore);
+    deleteNotif.addEventListener('click', () => {
+        container.removeChild(notification)
+    });
 }
 
+
 function takeOfNotification() {
-    notification.classList.add('fade-out');
+    notification.classList.add('');
     setTimeout(() => notification.remove());
+
 }
 
 
@@ -300,3 +384,17 @@ function showCart() {
     const total = state.cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
     alert(`В корзине товаров на сумму: ${total}₽`);
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
