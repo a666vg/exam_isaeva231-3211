@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- <link rel="stylesheet" href="../main-page/main.css"> -->
+    <link rel="stylesheet" href="profile.css">
+    <title>Корзина</title>
+</head>
+<body>
+    <header>
+        <div class="logo">
+            <img src="../main-page/logo.png" alt="Logo">
+        </div>
+
+        
+
+        <nav>
+            <a href="../main-page/main.html" class="cart-btn" id="cartBtn">
+                <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-list-task" viewBox="0 0 16 16">
+                    <path fill-rule="evenodd" d="M2 2.5a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5V3a.5.5 0 0 0-.5-.5zM3 3H2v1h1z"/>
+                    <path d="M5 3.5a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1-.5-.5M5.5 7a.5.5 0 0 0 0 1h9a.5.5 0 0 0 0-1zm0 4a.5.5 0 0 0 0 1h9a.5.5 0 0 0 0-1z"/>
+                    <path fill-rule="evenodd" d="M1.5 7a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5H2a.5.5 0 0 1-.5-.5zM2 7h1v1H2zm0 3.5a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5zm1 .5H2v1h1z"/>
+                  </svg>
+                
+            </a>
+            <a href="../basket-page/basket.html" class="cart-btn" id="cartBtn">
+                <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="#ffffff" class="bi bi-basket2-fill" viewBox="0 0 16 16">
+                    <path d="M5.929 1.757a.5.5 0 1 0-.858-.514L2.217 6H.5a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h.623l1.844 6.456A.75.75 0 0 0 3.69 15h8.622a.75.75 0 0 0 .722-.544L14.877 8h.623a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5h-1.717L10.93 1.243a.5.5 0 1 0-.858.514L12.617 6H3.383zM4 10a1 1 0 0 1 2 0v2a1 1 0 1 1-2 0zm3 0a1 1 0 0 1 2 0v2a1 1 0 1 1-2 0zm4-1a1 1 0 0 1 1 1v2a1 1 0 1 1-2 0v-2a1 1 0 0 1 1-1"/>
+                  </svg>
+                
+            </a>
+                
+            </a>
+        </nav>
+    </header>
+
+    <!-- Область для уведомлений -->
+    <div class="notification-area" id="notificationArea"></div>
+
+    <!-- Основной контент -->
+    <main>
+        <div class="dashboard-container">
+            <h1>Заказы</h1>
+
+            <!-- Секция заказов -->
+            <section class="orders-section">
+                
+
+                <!-- Таблица заказов -->
+                <div class="table-container">
+                    <table id="ordersTable">
+                        <thead>
+                            <tr>
+                                <th>№</th>
+                                <th>Дата и время</th>
+                                <th>Состав заказа</th>
+                                <th>Стоимость</th>
+                                <th>Дата доставки</th>
+                                <th>Время доставки</th>
+                                <th>Действия</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Здесь будут динамически добавляться строки заказов -->
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Сообщение при отсутствии заказов -->
+                <div id="noOrders" class="no-orders-message" style="display: none;">
+                    <p>У вас пока нет заказов</p>
+                    <a href="../main-page/main.html" class="btn-primary">Перейти к покупкам</a>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <!-- Шаблоны модальных окон -->
+    <!-- Модальное окно просмотра заказа -->
+    <template id="viewOrderModal">
+        <div class="modal view-order-modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2>Просмотр заказа</h2>
+                    <button class="close-modal" aria-label="Закрыть">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div class="order-details">
+                        <div class="detail-row">
+                            <span class="label">Номер заказа:</span>
+                            <span class="value" id="orderNumber"></span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="label">Дата заказа:</span>
+                            <span class="value" id="orderDate"></span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="label">Состав заказа:</span>
+                            <div class="value" id="orderItems"></div>
+                        </div>
+                        <div class="detail-row">
+                            <span class="label">Стоимость:</span>
+                            <span class="value" id="orderTotal"></span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="label">Адрес доставки:</span>
+                            <span class="value" id="deliveryAddress"></span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="label">Дата доставки:</span>
+                            <span class="value" id="deliveryDate"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn-secondary close-modal">Закрыть</button>
+                </div>
+            </div>
+        </div>
+    </template>
+
+    <!-- Модальное окно редактирования заказа -->
+    <template id="editOrderModal">
+        <div class="modal edit-order-modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button class="close-modal" aria-label="Закрыть">&times;</button>
+                    <h2>Редактирование заказа</h2>
+                    
+                </div>
+                <div class="modal-body">
+                    <form id="editOrderForm">
+                        <div class="form-group">
+                            <label for="full_name">ФИО:</label>
+                            <input type="text" id="full_name" name="full_name" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="email">Email:</label>
+                            <input type="email" id="email" name="email" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="phone">Телефон:</label>
+                            <input type="tel" id="phone" name="phone" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="delivery_address">Адрес доставки:</label>
+                            <input type="text" id="delivery_address" name="delivery_address" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="delivery_date">Дата доставки:</label>
+                            <input type="date" id="delivery_date" name="delivery_date" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="delivery_time">Время доставки:</label>
+                            <select id="delivery_time" name="delivery_interval" required>
+                                <option value="08:00-12:00">08:00-12:00</option>
+                                <option value="12:00-14:00">12:00-14:00</option>
+                                <option value="14:00-18:00">14:00-18:00</option>
+                                <option value="18:00-22:00">18:00-22:00</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="comment">Комментарий:</label>
+                            <textarea id="comment" name="comment" rows="3"></textarea>
+                        </div>
+                        <div id="editOrderComposition"></div>
+                        <div class="modal-footer">
+                            <button type="button" id="editModalClose">Отмена</button>
+                            <button type="submit">Сохранить</button>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" form="editOrderForm" class="btn-primary">Сохранить</button>
+                    <button type="button" class="btn-secondary close-modal">Отмена</button>
+                </div>
+            </div>
+        </div>
+    </template>
+
+    <!-- Модальное окно удаления заказа -->
+    <template id="deleteOrderModal">
+        <div class="modal delete-order-modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2>Удаление заказа</h2>
+                    <button class="close-modal" aria-label="Закрыть">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <p>Вы уверены, что хотите удалить заказ?</p>
+                    <p class="warning-text">Это действие нельзя будет отменить.</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn-danger confirm-delete">Удалить</button>
+                    <button type="button" class="btn-secondary close-modal">Отмена</button>
+                </div>
+            </div>
+        </div>
+    </template>
+
+    <!-- Футер -->
+    <footer>
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>Bitss & Bobs</h3>
+                <p>© 2025 Все права защищены</p>
+            </div>
+            <div class="footer-section">
+                <h3>Контакты</h3>
+                <p>Email: nagibator228@yandex.ru</p>
+                <p>Телефон: +8 (800) 555 35 35</p>
+            </div>
+            <div class="footer-section">
+                <h3>Адрес</h3>
+                <p>г. Москва, ул. Прянишникова</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Индикатор загрузки -->
+    <div id="loader" class="loader" style="display: none;">
+        <div class="loader-spinner"></div>
+    </div>
+
+    <!-- Подключение скриптов -->
+    <script src="profile.js"></script>
+</body>
+</html>
