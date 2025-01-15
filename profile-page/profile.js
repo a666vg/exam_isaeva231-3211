@@ -1,46 +1,11 @@
-
 const API_URL = 'https://edu.std-900.ist.mospolytech.ru/exam-2024-1/api';
 const API_KEY = 'dcb5d2ae-8c34-4792-96a9-b8819055c047';
 
 let state = {
     orders: [],
     products: [],
-    isLoading: false
+    
 };
-
-// Функции для управления индикатором загрузки
-function showLoader() {
-    try {
-        state.isLoading = true;
-        const loader = document.getElementById('loader');
-        if (loader) {
-            loader.style.display = 'block';
-        } else {
-            const newLoader = document.createElement('div');
-            newLoader.id = 'loader';
-            newLoader.innerHTML = `
-                <div class="loader-overlay">
-                    <div class="loader-spinner"></div>
-                </div>
-            `;
-            document.body.appendChild(newLoader);
-        }
-    } catch (error) {
-        console.error('Ошибка при отображении loader:', error);
-    }
-}
-
-function hideLoader() {
-    try {
-        state.isLoading = false;
-        const loader = document.getElementById('loader');
-        if (loader) {
-            loader.style.display = 'none';
-        }
-    } catch (error) {
-        console.error('Ошибка при скрытии loader:', error);
-    }
-}
 
 // Функция показа уведомлений
 function showNotification(message, type = 'success') {
@@ -70,7 +35,7 @@ function showNotification(message, type = 'success') {
         if (notification.parentNode === container) {
             container.removeChild(notification);
         }
-    }, 3000);
+    }, 5000);
 }
 
 // Инициализация приложения
@@ -78,7 +43,7 @@ document.addEventListener('DOMContentLoaded', initializeApp);
 
 async function initializeApp() {
     try {
-        showLoader();
+        
         await fetchProducts();
         await fetchOrders();
         setupEventListeners();
@@ -89,7 +54,7 @@ async function initializeApp() {
         hideLoader();
     }
 }
-
+// Загрузка товара
 async function fetchProducts() {
     try {
         const response = await fetch(`${API_URL}/goods?api_key=${API_KEY}`);
@@ -101,6 +66,7 @@ async function fetchProducts() {
     }
 }
 
+// Загрузка заказов
 async function fetchOrders() {
     try {
         const response = await fetch(`${API_URL}/orders?api_key=${API_KEY}`);
@@ -115,11 +81,14 @@ async function fetchOrders() {
     }
 }
 
+// Получение товара по айди
 function getProductNameById(id) {
     const product = state.products.find(p => p.id === id);
     return product ? product.name : 'Товар не найден';
 }
 
+
+// Проверка на стоимость доствки при редактировании
 function isWeekend(date) {
     const day = new Date(date).getDay();
     return day === 0 || day === 6;
@@ -378,9 +347,10 @@ function showEditModal(orderId) {
         await updateOrder(new FormData(e.target), goodIds);
     });
 }
+
+// Редактирование заказа 
 async function updateOrder(formData, goodIds) {
     try {
-        showLoader();
         
         const deliveryDate = formData.get('delivery_date');
         
@@ -476,32 +446,32 @@ function deleteOrder(orderId) {
     });
 }
         
-        async function handleDeleteOrder(orderId) {
-            try {
-                showLoader();
-                
-                const response = await fetch(`${API_URL}/orders/${orderId}?api_key=${API_KEY}`, {
-                    method: 'DELETE'
-                });
+async function handleDeleteOrder(orderId) {
+    try {
         
-                if (!response.ok) {
-                    throw new Error('Ошибка при удалении заказа');
-                }
         
-                // Обновляем локальное состояние
-                state.orders = state.orders.filter(order => order.id !== parseInt(orderId));
-                
-                // Обновляем таблицу и показываем уведомление
-                updateOrdersTable();
-                showNotification('Заказ успешно удален', 'success');
-        
-            } catch (error) {
-                console.error('Ошибка при удалении заказа:', error);
-                showNotification('Ошибка при удалении заказа', 'error');
-            } finally {
-                hideLoader();
-            }
+        const response = await fetch(`${API_URL}/orders/${orderId}?api_key=${API_KEY}`, {
+            method: 'DELETE'
+        });
+
+        if (!response.ok) {
+            throw new Error('Ошибка при удалении заказа');
         }
+
+        // Обновляем локальное состояние
+        state.orders = state.orders.filter(order => order.id !== parseInt(orderId));
+        
+        // Обновляем таблицу и показываем уведомление
+        updateOrdersTable();
+        showNotification('Заказ успешно удален', 'success');
+
+    } catch (error) {
+        console.error('Ошибка при удалении заказа:', error);
+        showNotification('Ошибка при удалении заказа', 'error');
+    } finally {
+        hideLoader();
+    }
+}
         
 function setupProductHandlers(order) {
     const form = document.getElementById('editOrderForm');
