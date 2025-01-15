@@ -161,25 +161,30 @@ function updateOrdersTable() {
     if (noOrders) noOrders.style.display = 'none';
     if (!tableBody) return;
 
+    console.log('Updating table with orders:', state.orders);
+
+    
+
     tableBody.innerHTML = state.orders.map((order, index) => {
         const orderProducts = order.good_ids.map(id => getProductNameById(id)).join(', ');
-        const total = calculateProductsTotal(order.good_ids);
+        const deliveryPrice = calculateDeliveryPrice(order.delivery_date, order.delivery_interval);
+        const productsTotal = calculateProductsTotal(order.good_ids);
+        const totalPrice = productsTotal + deliveryPrice;
         
         return `
             <tr data-order-id="${order.id}">
                 <td>${index + 1}</td>
                 <td>${new Date(order.created_at).toLocaleString()}</td>
                 <td>${orderProducts}</td>
-                <td>${total}₽</td>
+                <td>${totalPrice}₽</td>
                 <td>${new Date(order.delivery_date).toLocaleString().slice(0, 10)}, ${order.delivery_interval}</td>
-                
                 <td class="actions">
                     <button class="view-order" title="Просмотреть">👁️</button>
                     <button class="edit-order" title="Редактировать">✏️</button>
                     <button class="delete-order" title="Удалить">❌</button>
                 </td>
-            </tr>
-        `;
+            </tr>`
+        ;
     }).join('');
 }
 
@@ -248,6 +253,8 @@ function showViewModal(orderId) {
 function showEditModal(orderId) {
     const order = state.orders.find(o => o.id === Number(orderId));
     if (!order) return;
+
+
 
     const modalContent = `
         <div class="modal-header">
@@ -342,61 +349,105 @@ function showEditModal(orderId) {
         e.preventDefault();
         const goodIds = Array.from(form.querySelectorAll('.product-item'))
             .map(item => Number(item.dataset.productId));
+        console.log('Form data before submission:', {
+            formData: Object.fromEntries(new FormData(e.target)),
+            goodIds: goodIds
+        });
         await updateOrder(new FormData(e.target), goodIds);
     });
 }
 
+
+
 // Редактирование заказа 
 async function updateOrder(formData, goodIds) {
     try {
-        
-        const deliveryDate = formData.get('delivery_date');
-        
-        // Проверяем валидность даты доставки
-        if (!isValidDeliveryDate(deliveryDate)) {
-            throw new Error('Дата доставки не может быть раньше текущей даты');
-        }
-        
         const orderId = formData.get('orderId');
-        const orderData = {
-            full_name: formData.get('full_name'),
-            email: formData.get('email'),
-            phone: formData.get('phone'),
-            delivery_address: formData.get('delivery_address'),
-            delivery_date: deliveryDate,
-            delivery_interval: formData.get('delivery_interval'),
-            comment: formData.get('comment'),
-            good_ids: goodIds
+        console.log('Updating order with ID:', orderId);
+
+        // Находим текущий заказ
+        const currentOrder = state.orders.find(o => o.id === Number(orderId));
+        if (!currentOrder) {
+            throw new Error('Заказ не найден');
+        }
+
+        // Отправляем только good_ids
+        const updatedFields = {
+            good_ids: goodIds.map(id => Number(id))
         };
+
+        console.log('Fields to update:', updatedFields);
 
         const response = await fetch(`${API_URL}/orders/${orderId}?api_key=${API_KEY}`, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify(orderData)
+            body: JSON.stringify(updatedFields)
         });
 
-        if (!response.ok) throw new Error('Ошибка при обновлении заказа');
-
-        const updatedOrder = await response.json();
-        const orderIndex = state.orders.findIndex(o => o.id === Number(orderId));
-        if (orderIndex !== -1) {
-            state.orders[orderIndex] = updatedOrder;
+        if (!response.ok) {
+            const errorText = await response.text();
+            console.error('Server error response:', errorText);
+            throw new Error('Ошибка при обновлении заказа');
         }
 
+        // Получаем ответ от сервера
+        const serverResponse = await response.json();
+        console.log('Server response:', serverResponse);
+
+        // Принудительно обновляем локальное состояние
+        const orderIndex = state.orders.findIndex(o => o.id === Number(orderId));
+        if (orderIndex !== -1) {
+            // Создаем новый объект заказа с обновленными good_ids
+            const updatedOrder = {
+                ...serverResponse,
+                good_ids: goodIds.map(id => Number(id))
+            };
+            
+            // Обновляем заказ в состоянии
+            state.orders[orderIndex] = updatedOrder;
+            
+            console.log('Updated local state:', state.orders[orderIndex])
+        }
+
+        // Обновляем отображение
         updateOrdersTable();
+        
         showNotification('Заказ успешно обновлен', 'success');
         
         // Закрываем модальное окно
         const modalOverlay = document.querySelector('.modal-overlay');
-        if (modalOverlay) modalOverlay.remove();
-        
+        if (modalOverlay) {
+            modalOverlay.remove();
+        }
+
     } catch (error) {
-        console.error('Ошибка при обновлении заказа:', error);
+        console.error('Error in updateOrder:', error);
         showNotification(error.message || 'Ошибка при обновлении заказа', 'error');
-    } 
+    }
 }
+
+// Обновляем обработчик формы
+function setupEventListeners() {
+    const form = document.getElementById('editOrderForm');
+    if (form) {
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const formData = new FormData(e.target);
+            const goodIds = Array.from(form.querySelectorAll('.product-item'))
+                .map(item => Number(item.dataset.productId));
+            
+            console.log('Submitting form with data:', {
+                orderId: formData.get('orderId'),
+                goodIds: goodIds
+            });
+            
+            await updateOrder(formData, goodIds);
+        });
+    }
+}
+
 function deleteOrder(orderId) {
     // Получаем шаблон модального окна
     const template = document.getElementById('deleteOrderModal');
@@ -476,12 +527,20 @@ function setupProductHandlers(order) {
         button.addEventListener('click', function() {
             const productItem = this.closest('.product-item');
             if (productItem) {
+                console.log('Removing product with ID:', productItem.dataset.productId);
+                console.log('Current products before removal:', 
+                    Array.from(form.querySelectorAll('.product-item'))
+                        .map(item => Number(item.dataset.productId))
+                );
                 productItem.remove();
+                console.log('Products after removal:', 
+                    Array.from(form.querySelectorAll('.product-item'))
+                        .map(item => Number(item.dataset.productId))
+                );
                 updateTotalPrice();
             }
         });
     });
-        
     // Обработчик добавления товара
     const addProductButton = form.querySelector('.btn-add-product');
     const productSelect = form.querySelector('#availableProducts');
