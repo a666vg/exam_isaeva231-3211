@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- <link rel="stylesheet" href="../main-page/main.css"> -->
+    <link rel="stylesheet" href="basket.css">
+    <title>Корзина</title>
+</head>
+<body>
+    <header>
+        <div class="logo">
+            <img src="../main-page/logo.png" alt="Logo">
+        </div>
+
+        
+
+        <nav>
+            <a href="../main-page/main.html" class="cart-btn" id="cartBtn">
+                <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-list-task" viewBox="0 0 16 16">
+                    <path fill-rule="evenodd" d="M2 2.5a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5V3a.5.5 0 0 0-.5-.5zM3 3H2v1h1z"/>
+                    <path d="M5 3.5a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1-.5-.5M5.5 7a.5.5 0 0 0 0 1h9a.5.5 0 0 0 0-1zm0 4a.5.5 0 0 0 0 1h9a.5.5 0 0 0 0-1z"/>
+                    <path fill-rule="evenodd" d="M1.5 7a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5H2a.5.5 0 0 1-.5-.5zM2 7h1v1H2zm0 3.5a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5zm1 .5H2v1h1z"/>
+                  </svg>
+                
+            </a>
+            <a href="../profile-page/profile.html" class="profile-btn">
+                <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="#ffffff" class="bi bi-person-circle" viewBox="0 0 16 16">
+                    <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0"/>
+                    <path fill-rule="evenodd" d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8m8-7a7 7 0 0 0-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 0 0 8 1"/>
+                  </svg>
+                  
+
+                
+                    
+                </a>
+                
+            </a>
+        </nav>
+    </header>
+
+    <div class="notification-area" id="notificationArea"></div>
+
+    <main>
+        
+        
+        <!-- Сетка товаров -->
+        <div class="basket">
+            <h1>Корзина</h1>
+            <div class="cart-grid" id="cartItems">
+            
+            <!-- Товары будут добавлены через JavaScript -->
+        </div>
+
+        <div id="emptyCart" class="empty-cart hidden">
+            <p>Корзина пуста. Перейдите в каталог, чтобы добавить товары.</p>
+            <a href="../main-page/main.html" class="btn-primary">В каталог</a>
+        </div>
+
+        </div>
+        
+        
+
+        
+
+        <!-- Форма заказа -->
+        
+        <section class="order-section" id="orderForm">
+            <h1>Оформление заказа</h1>
+            <form id="checkoutForm">
+                <div class="order-columns">
+                    <!-- Левая колонка -->
+                    <div class="order-column">
+                        <div class="form-group">
+                            <label for="fullName">ФИО</label>
+                            <input type="text" id="fullName" name="full_name" >
+                        </div>
+
+                        <div class="form-group">
+                            <label for="phone">Телефон</label>
+                            <input type="tel" id="phone" name="phone" >
+                        </div>
+
+                        <div class="form-group">
+                            <label for="email">Email</label>
+                            <input type="email" id="email" name="email" >
+                            <label class="apply-filters">
+                                
+                                <input type="checkbox"id="apply-filters">
+                                получать рассылку
+                            </label>
+                        </div>
+
+                        
+
+
+
+
+                        <div class="form-group">
+                            <label for="comment">Комментарий к заказу</label>
+                            <textarea id="comment" name="comment"></textarea>
+                        </div>
+                    </div>
+
+                    <!-- Правая колонка -->
+                    <div class="order-column">
+                        <div class="form-group">
+                            <label for="address">Адрес доставки</label>
+                            <input type="text" id="address" name="delivery_address" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="deliveryDate">Дата доставки</label>
+                            <input type="date" id="deliveryDate" name="delivery_date" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="deliveryTime">Время доставки</label>
+                            <select id="deliveryTime" name="delivery_interval" required>
+                                <option value="08:00-12:00">08:00-12:00</option>
+                                <option value="12:00-14:00">12:00-14:00</option>
+                                <option value="14:00-18:00">14:00-18:00</option>
+                                <option value="18:00-22:00">18:00-22:00</option>
+                            </select>
+                        </div>
+
+                        <div class="order-summary">
+                            <p>Стоимость товаров: <span id="subtotalPrice">0</span></p>
+                            <p>Стоимость доставки: <span id="deliveryCost">200</span></p>
+                            <p class="total">Итого к оплате: <span id="totalPrice">0</span></p>
+                        </div>
+
+                        <div class="form-buttons">
+                            <button type="button" class="btn-reset" onclick="cartManager.resetForm()">Сбросить</button>
+                            <button type="submit" class="btn-submit">Оформить</button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </section>
+    </main>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>Bitss & Bobs</h3>
+                <p>© 2025 Все права защищены</p>
+            </div>
+            <div class="footer-section">
+                <h3>Контакты</h3>
+                <p>Email: nagibator228@yandex.ru</p>
+                <p>Телефон: +8 (800) 555 35 35</p>
+            </div>
+            <div class="footer-section">
+                <h3>Адрес</h3>
+                <p>г. Москва, ул. Прянишникова</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="basket.js"></script>
+</body>
+</html>
