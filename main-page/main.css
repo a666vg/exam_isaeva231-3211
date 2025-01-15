@@ -303,21 +303,126 @@ footer {
 
 
 /* Responsive Design */
-@media (max-width: 768px) {
+
+/* Крупные экраны */
+@media (min-width: 1200px) {
+    .search-container {
+        flex: 0 1 500px;
+    }
+    
     main {
-        flex-direction: column;
-    }
-
-    .filters {
-        width: 80%;
-    }
-
-
-    .products-grid {
-        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+        padding: 2rem 4rem;
     }
 }
 
+/* Средние экраны */
+@media (max-width: 1199px) {
+    .search-container {
+        flex: 0 1 400px;
+    }
+    
+    header {
+        padding: 0 1rem;
+    }
+    
+    .logo img {
+        height: 60px;
+    }
+}
+
+/* Планшеты */
+@media (max-width: 992px) {
+    .search-container {
+        flex: 0 1 300px;
+    }
+    
+    nav {
+        gap: 15px;
+    }
+    
+    .products-grid {
+        grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    }
+}
+
+/* Малые планшеты */
+@media (max-width: 768px) {
+    header {
+        height: auto;
+        padding: 1rem;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 1rem;
+    }
+    
+    .search-container {
+        flex: 1 1 100%;
+        order: 3;
+    }
+    
+    .logo {
+        order: 1;
+    }
+    
+    nav {
+        order: 2;
+    }
+    
+    main {
+        margin-top: calc(var(--header-height) + 60px);
+        flex-direction: column;
+        padding: 1rem;
+    }
+    
+    .filters {
+        width: 100%;
+        margin-bottom: 1rem;
+    }
+    
+    .order-columns {
+        grid-template-columns: 1fr;
+        gap: 2rem;
+    }
+}
+
+/* Мобильные устройства */
+@media (max-width: 576px) {
+    .logo img {
+        height: 50px;
+    }
+    
+    .search-container button {
+        padding: 8px 12px;
+    }
+    
+    .products-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .product-card h3 {
+        height: auto;
+        max-height: 4.8em;
+    }
+    
+    .price-inputs {
+        flex-direction: column;
+    }
+}
+
+/* Очень маленькие экраны */
+@media (max-width: 360px) {
+    header {
+        padding: 0.5rem;
+    }
+    
+    nav {
+        gap: 10px;
+    }
+    
+    .search-container input {
+        padding: 6px 8px;
+    }
+}
 
 
 /* var 1 */
