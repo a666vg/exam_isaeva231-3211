@@ -50,8 +50,6 @@ async function initializeApp() {
     } catch (error) {
         console.error('Ошибка инициализации:', error);
         showNotification('Ошибка при загрузке данных', 'error');
-    } finally {
-        hideLoader();
     }
 }
 // Загрузка товара
@@ -173,8 +171,8 @@ function updateOrdersTable() {
                 <td>${new Date(order.created_at).toLocaleString()}</td>
                 <td>${orderProducts}</td>
                 <td>${total}₽</td>
-                <td>${order.delivery_date}</td>
-                <td>${order.delivery_interval}</td>
+                <td>${new Date(order.delivery_date).toLocaleString().slice(0, 10)}, ${order.delivery_interval}</td>
+                
                 <td class="actions">
                     <button class="view-order" title="Просмотреть">👁️</button>
                     <button class="edit-order" title="Редактировать">✏️</button>
@@ -397,9 +395,7 @@ async function updateOrder(formData, goodIds) {
     } catch (error) {
         console.error('Ошибка при обновлении заказа:', error);
         showNotification(error.message || 'Ошибка при обновлении заказа', 'error');
-    } finally {
-        hideLoader();
-    }
+    } 
 }
 function deleteOrder(orderId) {
     // Получаем шаблон модального окна
@@ -468,8 +464,6 @@ async function handleDeleteOrder(orderId) {
     } catch (error) {
         console.error('Ошибка при удалении заказа:', error);
         showNotification('Ошибка при удалении заказа', 'error');
-    } finally {
-        hideLoader();
     }
 }
         
