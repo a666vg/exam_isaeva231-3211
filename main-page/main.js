@@ -94,7 +94,7 @@ function createProductCard(product) {
                 }
             </div>
             <button class="add-to-cart" onclick="addToCart(${product.id})">
-                В корзину
+                Добавить
             </button>
         </div>
     `;
@@ -310,7 +310,7 @@ function addToCart(productId) {
 
     const cartItem = state.cart.find(item => item.id === productId);
     if (cartItem) {
-        cartItem.quantity += 1;
+        cartItem.quantity = 1;
     } else {
         state.cart.push({
             id: productId,
@@ -321,7 +321,7 @@ function addToCart(productId) {
     }
 
     saveCartToLocalStorage();
-    updateCartCount();
+    
     showNotification(`${product.name} добавлен в корзину`);
 }
 
@@ -331,13 +331,13 @@ function saveCartToLocalStorage() {
 }
 
 // Загрузка корзины из localStorage
-function loadCartFromLocalStorage() {
-    const savedCart = localStorage.getItem('cart');
-    if (savedCart) {
-        state.cart = JSON.parse(savedCart)
-        updateCartCount();
-    }
-}
+// function loadCartFromLocalStorage() {
+//     const savedCart = localStorage.getItem('cart');
+//     if (savedCart) {
+//         state.cart = JSON.parse(savedCart)
+//         updateCartCount();
+//     }
+// }
 
 // Обновление счётчика товаров в корзине
 function updateCartCount() {
@@ -368,6 +368,12 @@ function showNotification(message, type = 'success') {
     deleteNotif.addEventListener('click', () => {
         container.removeChild(notification)
     });
+
+    setTimeout(() => {
+        if (notification.parentNode === container) {
+            container.removeChild(notification);
+        }
+    }, 3000);
 }
 
 
@@ -379,11 +385,6 @@ function takeOfNotification() {
 
 
 
-// Показ корзины (заглушка)
-function showCart() {
-    const total = state.cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
-    alert(`В корзине товаров на сумму: ${total}₽`);
-}
 
 
 
