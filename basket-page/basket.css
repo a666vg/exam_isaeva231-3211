@@ -12,6 +12,13 @@
     box-sizing: border-box;
 } */
 
+html {
+    width: 100%;
+    padding: 0;
+    margin: 0;
+
+}
+
 body {
     font-family: Arial, sans-serif;
     line-height: 1.6;
@@ -21,6 +28,11 @@ body {
     flex-direction: column; /* Добавляем это свойство */
     min-height: 100vh;
     box-sizing: border-box;
+    overflow-x: hidden;
+    width: 100%;
+    padding: 0;
+
+
 }
 
 
@@ -307,27 +319,68 @@ nav {
 .btn-delete-notif:hover{
     background: var(--accent-color);
 }
+@media (max-width: 768px) {
+    main {
+        margin-top: calc(var(--header-height) + 20px);
+        padding: 1rem;
+        width: 100%;
+        box-sizing: border-box;
+    }
 
-/* Responsive Design */
-@media (max-width: 1024px) {
-    .cart-grid {
-        grid-template-columns: repeat(2, 1fr);
+    .notification {
+        width: 100%;
+        box-sizing: border-box;
+        margin: 0;
+        padding: 1rem;
+    }
+
+    .footer-content {
+        padding: 0 0.5rem;
+        font-size: 0.9rem;
     }
 }
 
-@media (max-width: 768px) {
-    .order-columns {
-        grid-template-columns: 1fr;
-    }
-
-    .cart-grid {
-        grid-template-columns: 1fr;
+@media (max-width: 576px) {
+    header {
+        padding: 0.5rem;
+        width: 100%;
+        box-sizing: border-box;
     }
 
     main {
-        padding: 1rem;
+        padding: 0.5rem;
+    }
+
+    .footer-content {
+        padding: 0 0.25rem;
+        font-size: 0.85rem;
     }
 }
+
+@media (max-width: 390px) { 
+    body {
+        width: 100%;
+        min-width: 320px;
+    }
+
+    main {
+        padding: 0.25rem;
+    }
+
+    .notification {
+        padding: 0.5rem;
+    }
+
+    footer {
+        padding: 0.5rem;
+        
+    }
+
+    .footer-content {
+        font-size: 0.8rem;
+    }
+}
+
 
 footer {
     background: var(--primary-color); 
@@ -335,19 +388,15 @@ footer {
     display: flex;
     z-index: 1;
     margin-top: auto;
+    
 }
-
     
-    
-
 .footer-content {
     max-width: 1200px;
+    width: 100%; 
     margin: 0 auto;
     text-align: center;
+    padding: 1rem; 
 } 
-
-
-
-
 
 
