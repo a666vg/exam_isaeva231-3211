@@ -155,8 +155,40 @@ tr:hover {
 .close-modal {
     background: none;
     border: none;
-    /* font-size: 1.5rem; */
+    font-size: 1.5rem;
     cursor: pointer;
+}
+
+.btn-secondary {
+    width: 100%;
+    padding: 8px;
+    background: var(--secondary-color);
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: background-color 0.2s;
+}
+
+.btn-secondary:hover {
+    background: #155724;
+}
+
+.confirm-delete {
+    width: 100%;
+    padding: 8px;
+    background: var(--primary-color);
+    color: white;
+    border: none;
+    font-size: 1rem;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.confirm-delete:hover {
+    background-color: var(--accent-color);
 }
 
 /* Form Styles */
@@ -326,24 +358,58 @@ input, select, textarea {
     border-top: 1px solid #ddd;
 }
 
-/* Media Queries */
 @media (max-width: 1200px) {
+    main {
+        max-width: 95%;
+        padding: 1.5rem;
+    }
+
     .dashboard-container {
         padding: 1.5rem;
+    }
+
+    .footer-content {
+        max-width: 95%;
+        padding: 1rem;
+    }
+}
+
+@media (max-width: 992px) {
+    main {
+        max-width: 100%;
+        padding: 1rem;
+    }
+
+    .dashboard-container {
+        padding: 1rem;
+    }
+
+    table {
+        font-size: 0.9rem;
+    }
+
+    th, td {
+        padding: 0.75rem;
     }
 }
 
 @media (max-width: 768px) {
     header {
-        padding: 0.5rem;
-        flex-wrap: wrap;
+        padding: 0 1rem;
+        height: auto;
+        min-height: var(--header-height);
     }
     
     .logo img {
         height: 40px;
     }
     
+    nav {
+        gap: 0.5rem;
+    }
+    
     main {
+        margin-top: calc(var(--header-height) + 1rem);
         padding: 1rem;
     }
     
@@ -359,14 +425,79 @@ input, select, textarea {
     .add-product-section {
         flex-direction: column;
     }
+
+    .notification {
+        width: 95%;
+        margin: 0 auto 1rem auto;
+    }
+
+    footer {
+        width: 100%;
+        padding: 1rem 0;
+    }
+
+    .footer-content {
+        width: 95%;
+        padding: 0.75rem;
+    }
+
+    .table-container {
+        overflow-x: scroll;
+    }
+}
+
+@media (max-width: 576px) {
+    header {
+        padding: 0 0.5rem;
+    }
+
+    .logo img {
+        height: 35px;
+    }
+
+    main {
+        padding: 0.75rem;
+    }
+
+    .dashboard-container {
+        padding: 1rem;
+    }
+
+    .notification {
+        width: 100%;
+        padding: 0.75rem;
+    }
+
+    .btn-delete-notif {
+        right: 0.5rem;
+    }
+
+    .modal {
+        width: 100%;
+        margin: 0.5rem;
+    }
+
+    .footer-content {
+        padding: 0.5rem;
+        font-size: 0.9rem;
+    }
 }
 
 @media (max-width: 480px) {
+    header {
+        padding: 0 0.25rem;
+    }
+
+    .logo img {
+        height: 30px;
+    }
+
+    main {
+        padding: 0.5rem;
+    }
+
     .notification {
-        min-width: auto;
-        width: 90%;
-        left: 5%;
-        right: 5%;
+        font-size: 0.9rem;
     }
     
     .product-item {
@@ -374,22 +505,39 @@ input, select, textarea {
         align-items: flex-start;
         gap: 0.5rem;
     }
-}
 
+    .dashboard-container {
+        padding: 0.75rem;
+    }
+
+    th, td {
+        padding: 0.5rem;
+        font-size: 0.85rem;
+    }
+
+    .footer-content {
+        font-size: 0.85rem;
+        padding: 0.25rem;
+    }
+}
 
 footer {
     background: var(--primary-color); 
     color: white;
     display: flex;
+    justify-content: center;
+    width: 100%;
+    padding: 1rem 0;
     z-index: 1;
     margin-top: auto;
 }
 
-
 .footer-content {
     max-width: 1200px;
+    width: 100%;
     margin: 0 auto;
     text-align: center;
+    padding: 0 1rem;
 } 
 .modal-overlay {
     position: fixed;
