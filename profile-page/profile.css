@@ -580,3 +580,35 @@ footer {
     color: #dc3545;
     font-weight: bold;
 }
+
+
+
+.btn-remove-product, .btn-cancel  {
+    
+    background: var(--primary-color);
+    color: white;
+    border: none;
+    font-size: 1rem;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.btn-remove-product:hover, .btn-cancel:hover {
+    background-color: var(--accent-color);
+}
+
+.btn-save {
+    
+    background: var(--secondary-color);
+    color: white;
+    border: none;
+    font-size: 1rem;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+.btn-save:hover{
+    
+    background: green;
+}
